@@ -3,3 +3,11 @@
 .full-width {
   width: 100%;
 }
+
+svg {
+  color: var(--pico-color);
+}
+
+:where(fieldset:has(*[aria-invalid='true'])) + small {
+  color: var(--pico-del-color);
+}

@@ -1,23 +1,18 @@
 <script setup lang="ts">
-import { useEventsStore } from '@/stores/events'
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useEventsStore, type IEvent } from '@/stores/events'
+import { useRoute } from 'vue-router'
+import { useQRCode } from '@vueuse/integrations/useQRCode'
 
-const eventStore = useEventsStore()
-const router = useRouter()
+const eventsStore = useEventsStore()
+const route = useRoute()
 
-const event = eventStore.selectedEvent!
+const event = (eventsStore.events.find((_event) => _event.id === route.params.id) ?? null) as IEvent
 
-onMounted(() => {
-  if (!eventStore.selectedEvent) {
-    router.push({ name: 'events' })
-    return
-  }
-})
+const qrcode = useQRCode(JSON.stringify(event))
 </script>
 
 <template>
-  <template v-if="event">
-    <h2>Share: {{ event.name }}</h2>
-  </template>
+  <h2>Share: {{ event.name }}</h2>
+
+  <img :src="qrcode" />
 </template>

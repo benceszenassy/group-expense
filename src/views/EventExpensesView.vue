@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useEventsStore, type IEvent } from '@/stores/events'
 import { useRoute } from 'vue-router'
-import EventForm from '@/components/EventForm.vue'
+import ExpenseForm from '@/components/ExpenseForm.vue'
 
 const eventsStore = useEventsStore()
 const route = useRoute()
@@ -16,5 +16,5 @@ function onSubmit(event: IEvent) {
 <template>
   <h2>Details: {{ event.name }}</h2>
 
-  <EventForm :event="event" @save="onSubmit" />
+  <ExpenseForm :event="event" @save="onSubmit" />
 </template>
