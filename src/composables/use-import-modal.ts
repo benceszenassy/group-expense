@@ -1,4 +1,4 @@
-import { computed, readonly, ref } from 'vue'
+import { readonly, ref } from 'vue'
 
 const isOpen = ref(false)
 

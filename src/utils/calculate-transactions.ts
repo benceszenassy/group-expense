@@ -30,19 +30,19 @@ export default function calculateTransactions(event: IEvent) {
 
   // Step 1: Calculate net balances
   for (const expense of event.expenses) {
-    const { amount, payedBy, payers } = expense
-    const share = amount / payers.length
+    const { amount, paidBy, splitAmong } = expense
+    const share = amount / splitAmong.length
 
     // Credit the payer
-    balances[payedBy] ??= {
-      attendee: event.attendees.find((attendee) => attendee.id === payedBy)!,
+    balances[paidBy] ??= {
+      attendee: event.attendees.find((attendee) => attendee.id === paidBy)!,
       amount: 0,
     }
 
-    balances[payedBy].amount += amount
+    balances[paidBy].amount += amount
 
     // Debit each participant
-    for (const payer of payers) {
+    for (const payer of splitAmong) {
       balances[payer] ??= {
         attendee: event.attendees.find((attendee) => attendee.id === payer)!,
         amount: 0,

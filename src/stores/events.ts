@@ -1,4 +1,4 @@
-import { ref, readonly } from 'vue'
+import { readonly } from 'vue'
 import { defineStore } from 'pinia'
 import { useLocalStorage } from '@vueuse/core'
 
@@ -11,8 +11,8 @@ export interface IExpense {
   id: string
   name: string
   amount: number
-  payers: IAttendee['id'][]
-  payedBy: IAttendee['id']
+  splitAmong: IAttendee['id'][]
+  paidBy: IAttendee['id']
 }
 
 export interface IEvent {
@@ -40,25 +40,13 @@ export function createEmptyExpense() {
     id: crypto.randomUUID(),
     name: '',
     amount: 0,
-    payedBy: '',
-    payers: [],
+    paidBy: '',
+    splitAmong: [],
   } as IExpense
 }
 
 export const useEventsStore = defineStore('events', () => {
   const events = useLocalStorage<IEvent[]>('group_expense__events', [])
-  const selectedEvent = ref<IEvent | null>(null)
-
-  function selectEvent(eventId: string) {
-    const _selectedEvent = events.value.find((event) => event.id === eventId)
-
-    if (!_selectedEvent) {
-      console.warn(`No event with id: ${eventId}!`)
-      selectedEvent.value = null
-      return
-    }
-    selectedEvent.value = _selectedEvent
-  }
 
   function exportEvents() {
     const a = document.createElement('a')
@@ -105,8 +93,6 @@ export const useEventsStore = defineStore('events', () => {
     createEvent,
     removeEvent,
     saveEvent,
-    selectedEvent: readonly(selectedEvent),
-    selectEvent,
     exportEvents,
     importEvents,
   }

@@ -73,7 +73,7 @@ function onSubmit(event: Event) {
 
       <InputField name="currency" label="Currency" v-model.trim="newEvent.currency" />
 
-      <label for="newAttendee">Add attendee </label>
+      <label for="newAttendee">Add attendee</label>
       <fieldset role="group">
         <input
           type="text"
@@ -104,7 +104,7 @@ function onSubmit(event: Event) {
             <td>
               {{ attendee.name }}
             </td>
-            <td>
+            <td class="actions">
               <button
                 class="outline"
                 :aria-label="`Remove ${attendee.name} from attendees`"
@@ -133,7 +133,7 @@ function onSubmit(event: Event) {
 </template>
 
 <style scoped>
-table tr td:last-of-type {
+.actions {
   display: flex;
   justify-content: flex-end;
 }

@@ -44,12 +44,12 @@ const errors = computed(() => {
     _errors.amount = 'Must be a positive number'
   }
 
-  if (!newExpense.value.payedBy) {
-    _errors.payedBy = 'Required'
+  if (!newExpense.value.paidBy) {
+    _errors.paidBy = 'Required'
   }
 
-  if (!newExpense.value.payers?.length) {
-    _errors.payers = 'Required'
+  if (!newExpense.value.splitAmong?.length) {
+    _errors.splitAmong = 'Required'
   }
 
   return _errors
@@ -89,16 +89,16 @@ const expenses = computed(() => formatEvent(_event).expenses)
       <InputField name="date" label="Amount" type="number" v-model="newExpense.amount" />
 
       <SelectField
-        name="payedBy"
-        label="Payed by"
-        v-model="newExpense.payedBy"
+        name="paidBy"
+        label="Paid By"
+        v-model="newExpense.paidBy"
         :options="_event.attendees"
       />
 
       <SelectField
-        name="payers"
-        label="Who should pay"
-        v-model="newExpense.payers"
+        name="splitAmong"
+        label="Split among"
+        v-model="newExpense.splitAmong"
         multiple
         :options="_event.attendees"
       />
@@ -114,8 +114,8 @@ const expenses = computed(() => formatEvent(_event).expenses)
       <tr>
         <th>Name</th>
         <th>Amount ({{ event.currency }})</th>
-        <th>Payed by</th>
-        <th>Should pay</th>
+        <th>Paid By</th>
+        <th>Split among</th>
         <th></th>
       </tr>
     </thead>
@@ -128,10 +128,10 @@ const expenses = computed(() => formatEvent(_event).expenses)
           {{ expense.amount }}
         </td>
         <td>
-          {{ expense.payedBy }}
+          {{ expense.paidBy }}
         </td>
         <td>
-          {{ expense.payers }}
+          {{ expense.splitAmong }}
         </td>
         <td class="actions">
           <button
@@ -181,10 +181,5 @@ const expenses = computed(() => formatEvent(_event).expenses)
   display: flex;
   justify-content: flex-end;
   gap: 0.25rem;
-}
-
-.delete {
-  --pico-color: var(--pico-form-element-invalid-border-color);
-  --pico-border-color: var(--pico-form-element-invalid-border-color);
 }
 </style>

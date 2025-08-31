@@ -1,7 +1,14 @@
-@use '@picocss/pico/scss';
+@use '@picocss/pico/scss' with (
+  $theme-color: 'jade'
+);
 
 .full-width {
   width: 100%;
+}
+
+.delete {
+  --pico-color: var(--pico-form-element-invalid-border-color) !important;
+  --pico-border-color: var(--pico-form-element-invalid-border-color) !important;
 }
 
 svg {
@@ -10,4 +17,10 @@ svg {
 
 :where(fieldset:has(*[aria-invalid='true'])) + small {
   color: var(--pico-del-color);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }

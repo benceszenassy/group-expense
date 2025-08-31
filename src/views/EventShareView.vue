@@ -14,5 +14,16 @@ const qrcode = useQRCode(JSON.stringify(event))
 <template>
   <h2>Share: {{ event.name }}</h2>
 
-  <img :src="qrcode" />
+  <div class="img-container">
+    <img :src="qrcode" />
+  </div>
 </template>
+
+<style scoped>
+.img-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 1rem 2rem 1rem;
+}
+</style>

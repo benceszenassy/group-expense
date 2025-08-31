@@ -9,7 +9,6 @@ const eventsStore = useEventsStore()
 function onSubmit(event: IEvent) {
   eventsStore.createEvent(event)
 
-  eventsStore.selectEvent(event.id)
   router.push({
     name: 'event-details',
     params: {
