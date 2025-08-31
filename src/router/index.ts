@@ -67,7 +67,7 @@ type RouteName<T extends RouteRecordRaw | RouteRecordRaw[]> = T extends RouteRec
 export type RoutesNames = RouteName<typeof routes>
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory('/group-expense'),
   routes,
 })
 
