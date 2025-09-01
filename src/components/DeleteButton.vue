@@ -4,7 +4,7 @@ import useConfirmModal, { type ConfirmModalComposableProps } from '@/composables
 defineProps<{
   ariaLabel: string
   disabled?: boolean
-  confirmModalProps?: ConfirmModalComposableProps['props']
+  confirmModalProps?: Partial<ConfirmModalComposableProps['props']>
 }>()
 
 defineEmits<{
