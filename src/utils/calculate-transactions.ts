@@ -52,56 +52,57 @@ export default function calculateTransactions(event: IEvent) {
     }
   }
 
-  // Step 2: Convert balances to array
   const netBalances = Object.keys(balances)
     .map((id) => ({ ...balances[id], balance: parseFloat(balances[id].amount.toFixed(2)) }))
     .filter((netBalance) => Math.abs(netBalance.balance) > 0.01)
 
+  const _netBalances = JSON.parse(JSON.stringify(netBalances)) as INetBalance[]
+
+  // Step 2: Split attendees to debtors and creditors
+  const debtors = _netBalances
+    .filter((attendee) => attendee.balance < 0)
+    .sort((a, b) => (a.balance > b.balance ? 1 : -1))
+  const creditors = _netBalances
+    .filter((attendee) => attendee.balance > 0)
+    .sort((a, b) => (a.balance < b.balance ? 1 : -1))
+
   const transactions: IPath[] = []
 
-  // Step 3: Backtracking function
-  function dfs(start: number, currentBalances: INetBalance[], path: IPath[]) {
-    while (start < currentBalances.length && Math.abs(currentBalances[start].balance) < 0.01) {
-      start++
-    }
+  // Step 3: Calculate transactions
+  // biggest debtor pays biggest creditor to lowest debtor pays lowest creditor logic
+  debtors.forEach((debtor) => {
+    while (debtor.balance < 0) {
+      const creditor = creditors[0]
+      if (!creditor) throw new Error('No creditor left')
 
-    if (start === currentBalances.length) {
-      if (transactions.length === 0 || path.length < transactions.length) {
-        transactions.length = 0
-        path.forEach((p) => transactions.push(p))
+      const amount = Math.max(debtor.balance, -creditor.balance)
+
+      creditor.balance += amount
+      if (isRoundingError(creditor.balance)) {
+        creditor.balance = 0
       }
-      return
-    }
 
-    for (let i = start + 1; i < currentBalances.length; i++) {
-      const a = currentBalances[start]
-      const b = currentBalances[i]
-      if (a.balance * b.balance < 0) {
-        const amount = Math.min(Math.abs(a.balance), Math.abs(b.balance))
-        const origA = a.balance,
-          origB = b.balance
-
-        // Settle a with b
-        a.balance += a.balance > 0 ? -amount : amount
-        b.balance += b.balance > 0 ? -amount : amount
-
-        path.push({
-          from: a.balance < 0 ? a.attendee : b.attendee,
-          to: a.balance < 0 ? b.attendee : a.attendee,
-          amount: parseFloat(amount.toFixed(2)),
-        })
-
-        dfs(start + 1, currentBalances, path)
-
-        // Backtrack
-        path.pop()
-        a.balance = origA
-        b.balance = origB
+      debtor.balance -= amount
+      if (isRoundingError(debtor.balance)) {
+        debtor.balance = 0
       }
-    }
-  }
 
-  dfs(0, [...netBalances], [])
+      if (creditor.balance === 0) {
+        creditors.shift()
+      }
+
+      transactions.push({
+        amount,
+        to: creditor.attendee,
+        from: debtor.attendee,
+      })
+    }
+  })
 
   return { netBalances, transactions }
+}
+
+function isRoundingError(amount: number) {
+  const _amount = Math.abs(amount)
+  return _amount < 0.1 && _amount > 0
 }
